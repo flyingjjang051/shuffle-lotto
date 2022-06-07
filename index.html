@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" href="css/common.css" />
     <link rel="stylesheet" href="css/layout.css" />
+    <script src="js/lodash.js"></script>
   </head>
   <body>
     <header id="header">
@@ -28,36 +29,48 @@
       <!-- <ul class="list"><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li></ul> -->
     </div>
     <script>
-      const radioList = document.querySelectorAll(".radioBox label");
+      const radioList = document.querySelectorAll(".radioBox .radio");
       const paper = document.querySelector(".paper");
-      for (let j = 0; j < 5; j++) {
-        radioList[j].addEventListener("click", function () {
-          makeLotto();
+      const colors = ["yellow", "blue", "red", "gray", "green"];
+      let tempHtml;
+
+      //const tempArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      //console.log(_.shuffle(tempArray));
+
+      for (let i = 0; i < 5; i++) {
+        radioList[i].addEventListener("change", function () {
+          tempHtml = "";
+          console.log(this.value);
+          for (let j = 0; j < this.value; j++) {
+            makeLotto();
+          }
         });
       }
-
-      let tempHtml = `<ul class="list">`;
       function makeLotto() {
+        console.log("왜 두번 호출 하는걸까요");
+        tempHtml += `<ul class="list">`;
         const lotto = [];
         const sortLotto = [];
         for (let i = 1; i <= 46; i++) {
           lotto.push(i);
         }
-        for (let i = 0; i < 100; i++) {
-          let random = Math.floor(Math.random() * lotto.length);
-          let random02 = Math.floor(Math.random() * lotto.length);
-          let a = lotto[random02];
-          lotto[random02] = lotto[random];
-          lotto[random] = a;
-        }
+        // for (let i = 0; i < 100; i++) {
+        //   let random = Math.floor(Math.random() * lotto.length);
+        //   let random02 = Math.floor(Math.random() * lotto.length);
+        //   let a = lotto[random02];
+        //   lotto[random02] = lotto[random];
+        //   lotto[random] = a;
+        // }
+        const shuffledLotto = _.shuffle(lotto);
         for (let i = 0; i < 6; i++) {
-          sortLotto.push(lotto[i]);
+          sortLotto.push(shuffledLotto[i]);
         }
         sortLotto.sort(function (first, second) {
           return first - second;
         });
+        //1~10
         for (let i = 0; i < 6; i++) {
-          tempHtml += `<li>${sortLotto[i]}</li>`;
+          tempHtml += `<li class="${colors[Math.ceil(sortLotto[i] / 10) - 1]}">${sortLotto[i]}</li>`;
         }
         tempHtml += `</ul>`;
         paper.innerHTML = tempHtml;
